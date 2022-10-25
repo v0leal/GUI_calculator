@@ -2,10 +2,26 @@ import tkinter as tk
 import math
     # FUNCTIONS
 
-def add_digit(digit):                                       # Add digit to the entry row
-    entry.insert('end', digit)                              # Insert digit
-    if entry.get()[0] == '0' and len(entry.get()) == 1:                               # Check if the first digit '0'
-        entry.delete(0, 1)                                  # If 'yes', delete the first '0', if not - pass
+def press_key(event):
+    if event.char.isdigit():
+        add_digit(event.char)
+    elif event.char in '+-*/':
+        operation_button(event.char)
+    elif event.char == '\r':
+        calculate()
+    else:
+        entry.delete(-1,-1)
+
+def add_digit(digit):
+    value = entry.get()                     # Add digit to the entry row
+    if value == 'Dividing by zero':
+        entry.delete(0, 'end')                                  # If 'yes', delete the last operation symbol
+        entry.insert('end', digit)
+    else:
+        entry.delete(0,'end')
+        entry.insert('end', value + digit)                              # Insert digit
+        if value[0] == '0' and len(value) == 1:                               # Check if the first digit '0'
+            entry.delete(0, 1)                                  # If 'yes', delete the first '0', if not - pass
 
 def add_digit_button(digit):                                # Add digit button
     return tk.Button(main, text=digit, bd=3,
@@ -17,14 +33,17 @@ def add_operation_button(operation):                        # Add operation (+-*
 
 def operation_button(operation):                            # Insert operation to entry row
     value = entry.get()                                     # Save current entry row to a temporary variable
-                                                            # Delete current entry row
-    if value[-1] in '+-/*':                                 # Check if the last entry symbol is already operation mark
-        value = value[:-1]
-    elif '+' in value or '-' in value or '*' in value or '/' in value:
-        calculate()
-        value = entry.get()
-    entry.delete(0, 'end')                                  # If 'yes', delete the last operation symbol
-    entry.insert('end', value + str(operation))             # Add previous value of the entry row and add the new operation symbol
+    if value == 'Dividing by zero':
+        entry.delete(0, 'end')                                  # If 'yes', delete the last operation symbol
+        entry.insert('end', '0')
+    else:               # Delete current entry row
+        if value[-1] in '+-/*' and len(value) == 1:                                 # Check if the last entry symbol is already operation mark
+            value = value[:-1]
+        elif '+' in value or '-' in value or '*' in value or '/' in value:
+            calculate()
+            value = entry.get()
+        entry.delete(0, 'end')                                  # If 'yes', delete the last operation symbol
+        entry.insert('end', value + str(operation))             # Add previous value of the entry row and add the new operation symbol
 
 def add_clear_button():
     return tk.Button(main, text='C', bd=3,
@@ -39,12 +58,28 @@ def add_calculate_button():
                      command=lambda: calculate())
 def calculate():
     try:
-        ans = entry.get()
+        if entry.get()[-1] in '+-*/':
+            ans = entry.get() + entry.get()[:-1]
+        else:
+            ans = entry.get()
+        entry.delete(0, 'end')
+        if int(eval(ans)) == eval(ans):
+            entry.insert('end', str(int(eval(ans))))
+        else:
+            entry.insert('end', str(eval(ans)))
     except ZeroDivisionError:
         ans = 'Dividing by zero'
-    entry.delete(0, 'end')
-    entry.insert('end', str(eval(ans)))
+        entry.delete(0, 'end')
+        entry.insert('end', ans)
 
+def delete_symb(event):
+    value = entry.get()
+    if len(value) == 1:
+        entry.delete(0, 'end')
+        entry.insert('end', '0')
+    elif len(value[:-1]) > 0:
+        entry.delete(0,'end')
+        entry.insert('end', value[:-1])
 
     # INITIALISATION
 
@@ -60,6 +95,9 @@ main.resizable(True, True)                                   # Property of resiz
 main.minsize(300, 400)                                       # Set minimum size of the main window
 main.maxsize(500, 600)                                       # Set maximum size of the main window
 
+main.bind('<Key>', press_key)
+#main.bind('<Enter>', calculate)
+main.bind('<BackSpace>', delete_symb)
     # WORKBENCH CUSTOMIZATION
 
         ## Rows
