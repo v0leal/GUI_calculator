@@ -22,7 +22,13 @@ def operation_button(operation):                            # Insert operation t
         value = value[:-1]                                  # If 'yes', delete the last operation symbol
     entry.insert('end', value + str(operation))             # Add previous value of the entry row and add the new operation symbol
 
+def add_clear_button():
+    return tk.Button(main, text='C', bd=3,
+                     command=lambda: clear_button())
 
+def clear_button():
+    entry.delete(0, 'end')
+    entry.insert('end', '0')
 
     # INITIALISATION
 
@@ -49,10 +55,10 @@ main.grid_rowconfigure(4, minsize=40)
 main.grid_rowconfigure(5, minsize=40)
 
         ## Columns
-main.grid_columnconfigure(0, minsize=30)
-main.grid_columnconfigure(1, minsize=30)
-main.grid_columnconfigure(2, minsize=30)
-main.grid_columnconfigure(3, minsize=30)
+main.grid_columnconfigure(0, minsize=50)
+main.grid_columnconfigure(1, minsize=50)
+main.grid_columnconfigure(2, minsize=50)
+main.grid_columnconfigure(3, minsize=50)
 
 
     # ELEMENTS CREATING AND POSITION
@@ -90,7 +96,7 @@ btn_plus=add_operation_button('+').grid(row=2, column=3, stick='ewns', padx=2, p
 bnt_minus=add_operation_button('-').grid(row=3, column=3, stick='ewns', padx=2, pady=2)
 btn_multiply=add_operation_button('*').grid(row=4, column=3, stick='ewns', padx=2, pady=2)
 btn=divide=add_operation_button('/').grid(row=5, column=3, stick='ewns', padx=2, pady=2)
-
+btn_clr=add_clear_button().grid(row=5, column=0, stick='ewns', padx=2, pady=2)
 
 # CREATE MAIN WINDOW
 main.mainloop()
