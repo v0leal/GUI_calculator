@@ -1,10 +1,10 @@
 import tkinter as tk
-
+import math
     # FUNCTIONS
 
 def add_digit(digit):                                       # Add digit to the entry row
     entry.insert('end', digit)                              # Insert digit
-    if entry.get()[0] == '0':                               # Check if the first digit '0'
+    if entry.get()[0] == '0' and len(entry.get()) == 1:                               # Check if the first digit '0'
         entry.delete(0, 1)                                  # If 'yes', delete the first '0', if not - pass
 
 def add_digit_button(digit):                                # Add digit button
@@ -17,9 +17,13 @@ def add_operation_button(operation):                        # Add operation (+-*
 
 def operation_button(operation):                            # Insert operation to entry row
     value = entry.get()                                     # Save current entry row to a temporary variable
-    entry.delete(0, 'end')                                  # Delete current entry row
+                                                            # Delete current entry row
     if value[-1] in '+-/*':                                 # Check if the last entry symbol is already operation mark
-        value = value[:-1]                                  # If 'yes', delete the last operation symbol
+        value = value[:-1]
+    elif '+' in value or '-' in value or '*' in value or '/' in value:
+        calculate()
+        value = entry.get()
+    entry.delete(0, 'end')                                  # If 'yes', delete the last operation symbol
     entry.insert('end', value + str(operation))             # Add previous value of the entry row and add the new operation symbol
 
 def add_clear_button():
@@ -29,6 +33,18 @@ def add_clear_button():
 def clear_button():
     entry.delete(0, 'end')
     entry.insert('end', '0')
+
+def add_calculate_button():
+    return tk.Button(main, text='=', bd=3,
+                     command=lambda: calculate())
+def calculate():
+    try:
+        ans = entry.get()
+    except ZeroDivisionError:
+        ans = 'Dividing by zero'
+    entry.delete(0, 'end')
+    entry.insert('end', str(eval(ans)))
+
 
     # INITIALISATION
 
@@ -97,6 +113,7 @@ bnt_minus=add_operation_button('-').grid(row=3, column=3, stick='ewns', padx=2, 
 btn_multiply=add_operation_button('*').grid(row=4, column=3, stick='ewns', padx=2, pady=2)
 btn=divide=add_operation_button('/').grid(row=5, column=3, stick='ewns', padx=2, pady=2)
 btn_clr=add_clear_button().grid(row=5, column=0, stick='ewns', padx=2, pady=2)
+btn_equals=add_calculate_button().grid(row=5, column=2, stick='ewns', padx=2, pady=2)
 
 # CREATE MAIN WINDOW
 main.mainloop()
