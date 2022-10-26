@@ -95,8 +95,8 @@ def delete_symb(event):
         ## Main window
 
 main = tk.Tk()                                               # Create main window
-icon = tk.PhotoImage(file='icon.png')                        # Save icon of the main window
-main.iconphoto(False, icon)                                  # Set icon of the main window
+#icon = tk.PhotoImage(file='icon.png')                        # Save icon of the main window
+#main.iconphoto(False, icon)                                  # Set icon of the main window
 main.config(bg="#A6EBF2")                                    # Set default background color
 main.title("L.V.'s GUI calculator")                          # Rename main window's title
 main.geometry("300x440+200+250")                             # Set main window's default size (300px. x 400px.) and position (200px. from left border, 250px. from up border)
